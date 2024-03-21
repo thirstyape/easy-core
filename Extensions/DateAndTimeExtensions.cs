@@ -38,9 +38,11 @@ public static class DateAndTimeExtensions
 		if (xth < 1 || xth > 5)
 			throw new ArgumentOutOfRangeException(nameof(xth), "Must specify value between 1 and 5.");
 
-		var possibilities = dayInMonth.GetDaysInMonth(preserveTime)
+		var possibilities = dayInMonth
+			.GetDaysInMonth(preserveTime)
 			.Where(x => x.DayOfWeek == dayOfWeek)
-			.Select((x, i) => new { Date = x, Index = i });
+			.Select((x, i) => new { Date = x, Index = i })
+			.ToList();
 
 		var match = possibilities.SingleOrDefault(x => (x.Index + 1) == xth);
 

@@ -6,29 +6,37 @@
 	<Nullable>enable</Nullable>
 	<ImplicitUsings>enable</ImplicitUsings>
     <RootNamespace>$(MSBuildProjectName.Replace("-", "_"))</RootNamespace>
-	<PackageId>Easy.Base</PackageId>
 	<Authors>NF Software Inc.</Authors>
 	<Company>NF Software Inc.</Company>
 	<Copyright>Copyright 2024 $(Company)</Copyright>
-	<PackageLicenseFile>LICENSE</PackageLicenseFile>
-	<PackageIcon>icon.png</PackageIcon>
-	<PackageTags>library extensions converters tools</PackageTags>
-	<Description>Contains basic functions and classes to simplify application development of modern applications.</Description>
-	<RepositoryUrl>https://github.com/thirstyape/easy-core</RepositoryUrl>
-	<RepositoryType>git</RepositoryType>
-	<Version>1.0.0</Version>
-	<AssemblyVersion>1.0.0.0</AssemblyVersion>
-	<FileVersion>1.0.0.0</FileVersion>
+	<Version>1.0.1</Version>
+	<AssemblyVersion>1.0.1.0</AssemblyVersion>
+	<FileVersion>1.0.1.0</FileVersion>
+    <PackageId>Easy.Base</PackageId>
+    <PackageTags>library extensions converters tools</PackageTags>
+    <RepositoryUrl>https://github.com/thirstyape/easy-core</RepositoryUrl>
+    <Description>
+		Contains basic functions and classes to simplify application development of modern applications.
+	</Description>
 	<PackageReleaseNotes>
-		  1.0.0
-		  Initial release
+		1.0.1
+		Update publishing to include source link, deterministic, and compiler flags
+
+		1.0.0
+		Initial release
 	</PackageReleaseNotes>
-	<GenerateDocumentationFile>true</GenerateDocumentationFile>
-	<PackageReadmeFile>README.md</PackageReadmeFile>
   </PropertyGroup>
 
-	<PropertyGroup>
-		<DocumentationFile>$(ProjectDir)Easy-Core.xml</DocumentationFile>
+	<PropertyGroup Condition="'$(Configuration)' == 'Release'">
+		<DocumentationFile>$(ProjectDir)$(AssemblyName).xml</DocumentationFile>
+		<GenerateDocumentationFile>true</GenerateDocumentationFile>
+		<PackageReadmeFile>README.md</PackageReadmeFile>
+		<PackageLicenseFile>LICENSE</PackageLicenseFile>
+		<PackageIcon>icon.png</PackageIcon>
+		<RepositoryType>git</RepositoryType>
+		<AllowedOutputExtensionsInPackageBuildOutputFolder>$(AllowedOutputExtensionsInPackageBuildOutputFolder);.pdb</AllowedOutputExtensionsInPackageBuildOutputFolder>
+		<ContinuousIntegrationBuild>true</ContinuousIntegrationBuild>
+		<EmbedUntrackedSources>true</EmbedUntrackedSources>
 	</PropertyGroup>
 
 	<ItemGroup>
