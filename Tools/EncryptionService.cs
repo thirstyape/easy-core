@@ -140,7 +140,7 @@ public static class EncryptionService
 		byte[] authKey;
 
 		// Use a random salt to generate the crypt key
-		using (var generator = new Rfc2898DeriveBytes(password, settings.SaltByteSize, settings.KeyGenerationIterations))
+		using (var generator = new Rfc2898DeriveBytes(password, settings.SaltByteSize, settings.KeyGenerationIterations, HashAlgorithmName.SHA1))
 		{
 			var salt = generator.Salt;
 
@@ -152,7 +152,7 @@ public static class EncryptionService
 		}
 
 		// Use a random salt to generate the auth key
-		using (var generator = new Rfc2898DeriveBytes(password, settings.SaltByteSize, settings.KeyGenerationIterations))
+		using (var generator = new Rfc2898DeriveBytes(password, settings.SaltByteSize, settings.KeyGenerationIterations, HashAlgorithmName.SHA1))
 		{
 			var salt = generator.Salt;
 
@@ -310,13 +310,13 @@ public static class EncryptionService
 		Array.Copy(message, cryptSalt.Length, authSalt, 0, authSalt.Length);
 
 		// Generate the crypt key
-		using (var generator = new Rfc2898DeriveBytes(password, cryptSalt, settings.KeyGenerationIterations))
+		using (var generator = new Rfc2898DeriveBytes(password, cryptSalt, settings.KeyGenerationIterations, HashAlgorithmName.SHA1))
 		{
 			cryptKey = generator.GetBytes(settings.AesKeyByteSize);
 		}
 
 		// Generate the auth key
-		using (var generator = new Rfc2898DeriveBytes(password, authSalt, settings.KeyGenerationIterations))
+		using (var generator = new Rfc2898DeriveBytes(password, authSalt, settings.KeyGenerationIterations, HashAlgorithmName.SHA1))
 		{
 			authKey = generator.GetBytes(settings.AesKeyByteSize);
 		}

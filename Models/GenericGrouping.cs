@@ -7,6 +7,9 @@ namespace easy_core;
 /// </summary>
 public class GenericGrouping<TKey, TElement> : IGrouping<TKey, TElement>
 {
+	/// <summary>
+	/// Default constructor
+	/// </summary>
 	public GenericGrouping() { }
 
 	/// <exception cref="ArgumentNullException"></exception>
