@@ -224,37 +224,37 @@ public readonly struct DateTimeZoned : IComparable, IComparable<DateTimeZoned>, 
 	}
 
 	/// <summary>
-	/// Subtract operator
+	/// Subtract operator.
 	/// </summary>
 	public static TimeSpan operator -(DateTimeZoned d1, DateTimeZoned d2) => new(d1.UniversalTime.Ticks - d2.UniversalTime.Ticks);
 
     /// <summary>
-    /// Equality operator
+    /// Equality operator.
     /// </summary>
     public static bool operator ==(DateTimeZoned d1, DateTimeZoned d2) => d1.UniversalTime.Ticks == d2.UniversalTime.Ticks;
 
     /// <summary>
-    /// Inequality operator
+    /// Inequality operator.
     /// </summary>
     public static bool operator !=(DateTimeZoned d1, DateTimeZoned d2) => d1.UniversalTime.Ticks != d2.UniversalTime.Ticks;
 
     /// <summary>
-    /// Less than operator
+    /// Less than operator.
     /// </summary>
     public static bool operator <(DateTimeZoned d1, DateTimeZoned d2) => d1.UniversalTime.Ticks < d2.UniversalTime.Ticks;
 
     /// <summary>
-    /// Less than or equal to operator
+    /// Less than or equal to operator.
     /// </summary>
     public static bool operator <=(DateTimeZoned d1, DateTimeZoned d2) => d1.UniversalTime.Ticks <= d2.UniversalTime.Ticks;
 
     /// <summary>
-    /// Greater than operator
+    /// Greater than operator.
     /// </summary>
     public static bool operator >(DateTimeZoned d1, DateTimeZoned d2) => d1.UniversalTime.Ticks > d2.UniversalTime.Ticks;
 
     /// <summary>
-    /// Greater than or equal to operator
+    /// Greater than or equal to operator.
     /// </summary>
     public static bool operator >=(DateTimeZoned d1, DateTimeZoned d2) => d1.UniversalTime.Ticks >= d2.UniversalTime.Ticks;
 }

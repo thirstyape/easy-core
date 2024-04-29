@@ -37,6 +37,16 @@ public static class CollectionExtensions
 	}
 
 	/// <summary>
+	/// Checks whether an enumerable is null or empty.
+	/// </summary>
+	/// <typeparam name="TItem">The type of the item in the enumerable.</typeparam>
+	/// <param name="value">The value to check.</param>
+	public static bool IsNullOrEmpty<TItem>(this IEnumerable<TItem>? value)
+	{
+		return value == null || value.Any() == false;
+	}
+
+	/// <summary>
 	/// Returns each nth item of the provided list.
 	/// </summary>
 	/// <typeparam name="TList">The type of data contained in the list.</typeparam>
@@ -152,5 +162,25 @@ public static class CollectionExtensions
 		return source.Select((Item, Index) => new { Index, Item })
 			.GroupBy(x => x.Index % count)
 			.Select(x => x.Select(y => y.Item));
+	}
+
+	/// <inheritdoc cref="Enumerable.Skip{TSource}(IEnumerable{TSource}, int)" />
+	public static IEnumerable<TSource> SkipLong<TSource>(this IEnumerable<TSource> source, long count)
+	{
+		while (count > 0)
+		{
+			if (count > int.MaxValue)
+			{
+				source = source.Skip(int.MaxValue);
+				count -= int.MaxValue;
+			}
+			else
+			{
+				source = source.Skip((int)count);
+				count = 0;
+			}
+		}
+
+		return source;
 	}
 }

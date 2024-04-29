@@ -239,4 +239,17 @@ public static class DateAndTimeExtensions
 		else
 			return $"-{((int)value.TotalHours).ToString().PadLeft(2, '0')}:{value:mm}";
 	}
+
+	/// <summary>
+	/// Returns the timespan in hh:mm format, with the AM or PM specifier at the end.
+	/// </summary>
+	/// <param name="value">The value to format.</param>
+	/// <exception cref="ArgumentException"></exception>
+	public static string ToAmPm(this TimeSpan value)
+	{
+		if (value >= TimeSpan.Zero && value < TimeSpan.FromDays(1))
+			return DateTime.Today.Add(value).ToString("t");
+		else
+			throw new ArgumentException("Value must be between zero and 24 hours.", nameof(value));
+	}
 }
