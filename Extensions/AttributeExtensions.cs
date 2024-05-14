@@ -16,7 +16,7 @@ public static class AttributeExtensions
 	public static string GetPropertyDisplayName(this PropertyInfo property)
 	{
 		var attribute = property.GetCustomAttribute(typeof(DisplayAttribute)) as DisplayAttribute;
-		return attribute?.GetName() ?? string.Empty;
+		return attribute?.GetName() ?? property.Name;
 	}
 
 	/// <summary>

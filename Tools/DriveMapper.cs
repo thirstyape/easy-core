@@ -1,5 +1,4 @@
 ﻿using System.Diagnostics;
-using System.Runtime.InteropServices;
 
 namespace easy_core;
 
@@ -44,7 +43,7 @@ public static class DriveMapper
 
 		ProcessStartInfo startInfo;
 
-		if (RuntimeInformation.IsOSPlatform(OSPlatform.Windows))
+		if (OperatingSystem.IsWindows())
 		{
 			startInfo = new ProcessStartInfo
 			{
@@ -54,7 +53,7 @@ public static class DriveMapper
 				CreateNoWindow = true
 			};
 		}
-		else if (RuntimeInformation.IsOSPlatform(OSPlatform.Linux))
+		else if (OperatingSystem.IsLinux())
 		{
 			if (string.IsNullOrWhiteSpace(mountPoint))
 				throw new ArgumentNullException(nameof(mountPoint));
@@ -67,7 +66,7 @@ public static class DriveMapper
 				CreateNoWindow = true
 			};
 		}
-		else if (RuntimeInformation.IsOSPlatform(OSPlatform.OSX))
+		else if (OperatingSystem.IsMacOS() || OperatingSystem.IsMacCatalyst())
 		{
 			if (string.IsNullOrWhiteSpace(mountPoint))
 				throw new ArgumentNullException(nameof(mountPoint));
@@ -107,7 +106,7 @@ public static class DriveMapper
 	{
 		ProcessStartInfo startInfo;
 
-		if (RuntimeInformation.IsOSPlatform(OSPlatform.Windows))
+		if (OperatingSystem.IsWindows())
 		{
 			if (string.IsNullOrWhiteSpace(path))
 				throw new ArgumentNullException(nameof(path));
@@ -120,7 +119,7 @@ public static class DriveMapper
 				CreateNoWindow = true
 			};
 		}
-		else if (RuntimeInformation.IsOSPlatform(OSPlatform.Linux) || RuntimeInformation.IsOSPlatform(OSPlatform.OSX))
+		else if (OperatingSystem.IsLinux() || OperatingSystem.IsMacOS() || OperatingSystem.IsMacCatalyst())
 		{
 			if (string.IsNullOrWhiteSpace(mountPoint))
 				throw new ArgumentNullException(nameof(mountPoint));
