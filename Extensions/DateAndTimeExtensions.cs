@@ -5,6 +5,12 @@
 /// </summary>
 public static class DateAndTimeExtensions
 {
+	/// <inheritdoc cref="DateOnly.ToDateTime(TimeOnly)" />
+	public static DateTime ToDateTime(this DateOnly value)
+	{
+		return value.ToDateTime(TimeOnly.MinValue);
+	}
+
 	/// <summary>
 	/// Returns a <see cref="DateTime"/> for each day in the provided month.
 	/// </summary>
@@ -20,6 +26,18 @@ public static class DateAndTimeExtensions
 		else
 			for (var day = 1; day <= days; day++)
 				yield return new DateTime(date.Year, date.Month, day);
+	}
+
+	/// <summary>
+	/// Returns a <see cref="DateOnly"/> for each day in the provided month.
+	/// </summary>
+	/// <param name="date">The date to return days in month for.</param>
+	public static IEnumerable<DateOnly> GetDaysInMonth(this DateOnly date)
+	{
+		var days = DateTime.DaysInMonth(date.Year, date.Month);
+
+		for (var day = 1; day <= days; day++)
+			yield return new DateOnly(date.Year, date.Month, day);
 	}
 
 	/// <summary>
@@ -40,6 +58,35 @@ public static class DateAndTimeExtensions
 
 		var possibilities = dayInMonth
 			.GetDaysInMonth(preserveTime)
+			.Where(x => x.DayOfWeek == dayOfWeek)
+			.Select((x, i) => new { Date = x, Index = i })
+			.ToList();
+
+		var match = possibilities.SingleOrDefault(x => (x.Index + 1) == xth);
+
+		if (match != null)
+			return match.Date;
+		else
+			return possibilities.Single(x => (x.Index + 1) == 4).Date;
+	}
+
+	/// <summary>
+	/// Returns the Xth instance of the specified day in the month.
+	/// </summary>
+	/// <param name="dayInMonth">The source date to use, any day in the desired month.</param>
+	/// <param name="dayOfWeek">The day of the week to find.</param>
+	/// <param name="xth">The sequential instance of the day to find (valid options are 1 to 5).</param>
+	/// <exception cref="ArgumentOutOfRangeException"></exception>
+	/// <remarks>
+	/// As an example, to find the last Sunday in a month, set dayOfWeek to <see cref="DayOfWeek.Sunday"/> and xth to 5. If the month has 5 Sundays it will return the 5th, otherwise the 4th.
+	/// </remarks>
+	public static DateOnly GetXthDayOfWeekInMonth(this DateOnly dayInMonth, DayOfWeek dayOfWeek, int xth)
+	{
+		if (xth < 1 || xth > 5)
+			throw new ArgumentOutOfRangeException(nameof(xth), "Must specify value between 1 and 5.");
+
+		var possibilities = dayInMonth
+			.GetDaysInMonth()
 			.Where(x => x.DayOfWeek == dayOfWeek)
 			.Select((x, i) => new { Date = x, Index = i })
 			.ToList();
@@ -91,6 +138,43 @@ public static class DateAndTimeExtensions
 	}
 
 	/// <summary>
+	/// Returns the Xth day of the specified month.
+	/// </summary>
+	/// <param name="dayInMonth">The source date to use, any day in the desired month.</param>
+	/// <param name="xth">The day of the month to find (valid options are 1 to 31).</param>
+	/// <param name="tryNextYear">Specifies whether to try the next year when requested date is not found (useful for leap years).</param>
+	/// <exception cref="ArgumentOutOfRangeException"></exception>
+	/// <remarks>
+	/// Will return highest day of month if out of range xth is provided (ex. returns 30th in November when 31st is requested).
+	/// </remarks>
+	public static DateOnly GetXthDayInMonth(this DateOnly dayInMonth, int xth, bool tryNextYear = false)
+	{
+		if (xth < 1 || xth > 31)
+			throw new ArgumentOutOfRangeException(nameof(xth), "Must specify value between 1 and 31.");
+
+		if (tryNextYear)
+		{
+			int days;
+			var i = 0;
+			var check = dayInMonth;
+
+			do
+			{
+				days = DateTime.DaysInMonth(check.Year, check.Month);
+				i++;
+
+				if (xth > days)
+					check = check.AddYears(1);
+			} while (xth > days && i < 4);
+
+			if (xth <= days && check != dayInMonth)
+				dayInMonth = check;
+		}
+
+		return dayInMonth.GetDaysInMonth().GetXthDayInMonth(xth);
+	}
+
+	/// <summary>
 	/// Returns the Xth day from the provided range.
 	/// </summary>
 	private static DateTime GetXthDayInMonth(this IEnumerable<DateTime> days, int xth)
@@ -106,6 +190,21 @@ public static class DateAndTimeExtensions
 	}
 
 	/// <summary>
+	/// Returns the Xth day from the provided range.
+	/// </summary>
+	private static DateOnly GetXthDayInMonth(this IEnumerable<DateOnly> days, int xth)
+	{
+		var match = days.FirstOrNull(x => x.Day == xth);
+
+		if (match != null)
+			return match.Value;
+		else if (xth > 28)
+			return days.GetXthDayInMonth(--xth);
+		else
+			return DateOnly.MaxValue;
+	}
+
+	/// <summary>
 	/// Returns the next occurrence of the specified day of week or the current date if already on the specified day of week.
 	/// </summary>
 	/// <param name="date">The date to use as a base.</param>
@@ -113,11 +212,25 @@ public static class DateAndTimeExtensions
 	public static DateTime GetNextWeekday(this DateTime date, DayOfWeek day) => date.AddDays((day - date.DayOfWeek + 7) % 7);
 
 	/// <summary>
+	/// Returns the next occurrence of the specified day of week or the current date if already on the specified day of week.
+	/// </summary>
+	/// <param name="date">The date to use as a base.</param>
+	/// <param name="day">The day of the week requested.</param>
+	public static DateOnly GetNextWeekday(this DateOnly date, DayOfWeek day) => date.AddDays((day - date.DayOfWeek + 7) % 7);
+
+	/// <summary>
 	/// Returns the previous occurrence of the specified day of week or the current date if already on the specified day of week.
 	/// </summary>
 	/// <param name="date">The date to use as a base.</param>
 	/// <param name="day">The day of the week requested.</param>
 	public static DateTime GetPreviousWeekday(this DateTime date, DayOfWeek day) => date.AddDays(-((date.DayOfWeek - day + 7) % 7));
+
+	/// <summary>
+	/// Returns the previous occurrence of the specified day of week or the current date if already on the specified day of week.
+	/// </summary>
+	/// <param name="date">The date to use as a base.</param>
+	/// <param name="day">The day of the week requested.</param>
+	public static DateOnly GetPreviousWeekday(this DateOnly date, DayOfWeek day) => date.AddDays(-((date.DayOfWeek - day + 7) % 7));
 
 	/// <summary>
 	/// Provides an enumerable collection of <see cref="DateTime"/> for each day between the start and end.
@@ -128,6 +241,18 @@ public static class DateAndTimeExtensions
 	public static IEnumerable<DateTime> ListDaysTo(this DateTime start, DateTime end, int step = 1)
 	{
 		for (var day = start.Date; day.Date <= end.Date; day = day.AddDays(step))
+			yield return day;
+	}
+
+	/// <summary>
+	/// Provides an enumerable collection of <see cref="DateTime"/> for each day between the start and end.
+	/// </summary>
+	/// <param name="start">The date to start at.</param>
+	/// <param name="end">The date to end at.</param>
+	/// <param name="step">The number of days use as an interval.</param>
+	public static IEnumerable<DateOnly> ListDaysTo(this DateOnly start, DateOnly end, int step = 1)
+	{
+		for (var day = start; day <= end; day = day.AddDays(step))
 			yield return day;
 	}
 
@@ -241,6 +366,15 @@ public static class DateAndTimeExtensions
 	}
 
 	/// <summary>
+	/// Returns the timeonly in HH:mm format, with any days converted into hours.
+	/// </summary>
+	/// <param name="value">The value to format.</param>
+	public static string ToHhMm(this TimeOnly value)
+	{
+		return DateTime.Today.Add(value.ToTimeSpan()).ToString("HH:mm");
+	}
+
+	/// <summary>
 	/// Returns the timespan in hh:mm format, with the AM or PM specifier at the end.
 	/// </summary>
 	/// <param name="value">The value to format.</param>
@@ -251,5 +385,14 @@ public static class DateAndTimeExtensions
 			return DateTime.Today.Add(value).ToString("t");
 		else
 			throw new ArgumentException("Value must be between zero and 24 hours.", nameof(value));
+	}
+
+	/// <summary>
+	/// Returns the timeonly in hh:mm format, with the AM or PM specifier at the end.
+	/// </summary>
+	/// <param name="value">The value to format.</param>
+	public static string ToAmPm(this TimeOnly value)
+	{
+		return DateTime.Today.Add(value.ToTimeSpan()).ToString("t");
 	}
 }
