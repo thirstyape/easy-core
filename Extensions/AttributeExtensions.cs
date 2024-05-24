@@ -30,6 +30,21 @@ public static class AttributeExtensions
 	}
 
 	/// <summary>
+	/// Returns the display name of a provided property if found.
+	/// </summary>
+	/// <param name="propertyName">The name of the property in the parent class.</param>
+	/// <param name="type">The data type of the parent class of the property.</param>
+	public static string GetPropertyDisplayName(this Type type, string propertyName)
+	{
+		var property = type.GetProperty(propertyName);
+
+		if (property == null)
+			return string.Empty;
+
+		return property.GetPropertyDisplayName();
+	}
+
+	/// <summary>
 	/// Returns the <see cref="DisplayAttribute.Name"/> value of a provided property value if found.
 	/// </summary>
 	/// <typeparam name="TModel">The type of the property.</typeparam>

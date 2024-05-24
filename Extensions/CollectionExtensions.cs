@@ -81,6 +81,45 @@ public static class CollectionExtensions
 		return source != null && source.Any(x => x != null) ? source : new List<TSource>() { defaultValue };
 	}
 
+	/// <inheritdoc cref="Enumerable.Max{TSource, TResult}(IEnumerable{TSource}, Func{TSource, TResult})"/>
+	public static TResult? MaxOrDefault<TSource, TResult>(this IEnumerable<TSource>? source, Func<TSource, TResult> selector)
+	{
+		if (source == null || source.Any() == false)
+			return default;
+		else
+			return source.Max(selector);
+	}
+
+	/// <inheritdoc cref="Enumerable.Max{TSource, TResult}(IEnumerable{TSource}, Func{TSource, TResult})"/>
+	/// <param name="defaultValue">A value to return if the collection is null or empty.</param>
+	public static TResult? MaxOrDefault<TSource, TResult>(this IEnumerable<TSource>? source, Func<TSource, TResult> selector, TResult defaultValue)
+	{
+		if (source == null || source.Any() == false)
+			return defaultValue;
+		else
+			return source.Max(selector);
+	}
+
+	/// <inheritdoc cref="Enumerable.Min{TSource, TResult}(IEnumerable{TSource}, Func{TSource, TResult})"/>
+	/// <param name="defaultValue">A value to return if the collection is null or empty.</param>
+	public static TResult? MinOrDefault<TSource, TResult>(this IEnumerable<TSource>? source, Func<TSource, TResult> selector)
+	{
+		if (source == null || source.Any() == false)
+			return default;
+		else
+			return source.Min(selector);
+	}
+
+	/// <inheritdoc cref="Enumerable.Min{TSource, TResult}(IEnumerable{TSource}, Func{TSource, TResult})"/>
+	/// <param name="defaultValue">A value to return if the collection is null or empty.</param>
+	public static TResult? MinOrDefault<TSource, TResult>(this IEnumerable<TSource>? source, Func<TSource, TResult> selector, TResult defaultValue)
+	{
+		if (source == null || source.Any() == false)
+			return defaultValue;
+		else
+			return source.Min(selector);
+	}
+
 	/// <summary>
 	/// Converts the provided collection of items into a data table.
 	/// </summary>
@@ -93,7 +132,7 @@ public static class CollectionExtensions
 		var ordered = new List<PropertyDescriptor>();
 		var table = new DataTable();
 
-		if (columns.Any())
+		if (columns.Length != 0)
 		{
 			properties = properties.Where(x => columns.Contains(x.Name));
 
