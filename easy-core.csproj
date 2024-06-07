@@ -8,9 +8,9 @@
 		<Authors>NF Software Inc.</Authors>
 		<Company>NF Software Inc.</Company>
 		<Copyright>Copyright 2024 $(Company)</Copyright>
-		<Version>1.0.7</Version>
-		<AssemblyVersion>1.0.7.0</AssemblyVersion>
-		<FileVersion>1.0.7.0</FileVersion>
+		<Version>1.0.8</Version>
+		<AssemblyVersion>1.0.8.0</AssemblyVersion>
+		<FileVersion>1.0.8.0</FileVersion>
 		<PackageId>Easy.Base</PackageId>
 		<PackageTags>library extensions converters tools</PackageTags>
 		<RepositoryUrl>https://github.com/thirstyape/easy-core</RepositoryUrl>
@@ -19,6 +19,9 @@
 			Contains basic functions and classes to simplify application development of modern applications.
 		</Description>
 		<PackageReleaseNotes>
+			1.0.8
+			Add new extension methods
+
 			1.0.7
 			Add new extension methods
 
