@@ -26,9 +26,10 @@ public static class StreamExtensions
 	/// </summary>
 	/// <param name="source">The stream to copy data from.</param>
 	/// <param name="destination">The stream to copy data into.</param>
-	public static async Task CopyAndResetAsync<TStream>(this TStream source, Stream destination) where TStream : Stream
+	/// <param name="token">A token to cancel the operation.</param>
+	public static async Task CopyAndResetAsync<TStream>(this TStream source, Stream destination, CancellationToken? token = null) where TStream : Stream
 	{
-		await source.CopyToAsync(destination);
+		await source.CopyToAsync(destination, token ?? CancellationToken.None);
 
 		if (source.CanSeek)
 			source.Seek(0, SeekOrigin.Begin);
@@ -59,11 +60,12 @@ public static class StreamExtensions
 	/// Copies the source stream into a new memory stream and seeks the source to 0 if possible.
 	/// </summary>
 	/// <param name="stream">The stream to copy data from.</param>
-	public static async Task<MemoryStream> CopyAndResetAsync<TStream>(this TStream stream) where TStream : Stream
+	/// <param name="token">A token to cancel the operation.</param>
+	public static async Task<MemoryStream> CopyAndResetAsync<TStream>(this TStream stream, CancellationToken? token = null) where TStream : Stream
 	{
 		var destination = new MemoryStream();
 
-		await stream.CopyToAsync(destination);
+		await stream.CopyToAsync(destination, token ?? CancellationToken.None);
 
 		if (stream.CanSeek)
 			stream.Seek(0, SeekOrigin.Begin);
