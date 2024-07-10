@@ -22,7 +22,6 @@ To use this library either clone a copy of the repository or check out the [NuGe
 ### Frameworks
 
 - .NET 6.0
-- .NET 7.0
 - .NET 8.0
 
 ## Authors
