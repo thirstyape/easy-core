@@ -1,16 +1,16 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
 	<PropertyGroup>
-		<TargetFrameworks>net6.0;net7.0;net8.0</TargetFrameworks>
+		<TargetFrameworks>net6.0;net8.0</TargetFrameworks>
 		<Nullable>enable</Nullable>
 		<ImplicitUsings>enable</ImplicitUsings>
 		<RootNamespace>$(MSBuildProjectName.Replace("-", "_"))</RootNamespace>
 		<Authors>NF Software Inc.</Authors>
 		<Company>NF Software Inc.</Company>
 		<Copyright>Copyright 2024 $(Company)</Copyright>
-		<Version>1.0.10</Version>
-		<AssemblyVersion>1.0.10.0</AssemblyVersion>
-		<FileVersion>1.0.10.0</FileVersion>
+		<Version>1.1.0</Version>
+		<AssemblyVersion>1.1.0.0</AssemblyVersion>
+		<FileVersion>1.1.0.0</FileVersion>
 		<PackageId>Easy.Base</PackageId>
 		<PackageTags>library extensions converters tools</PackageTags>
 		<RepositoryUrl>https://github.com/thirstyape/easy-core</RepositoryUrl>
@@ -19,6 +19,9 @@
 			Contains basic functions and classes to simplify application development of modern applications.
 		</Description>
 		<PackageReleaseNotes>
+			1.1.0
+			Drop support for .NET 7.0 and Add extensions for ISOWeek
+
 			1.0.10
 			Add IPAddress extension methods
 

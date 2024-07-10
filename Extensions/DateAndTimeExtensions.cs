@@ -1,4 +1,6 @@
-﻿namespace easy_core;
+﻿using System.Globalization;
+
+namespace easy_core;
 
 /// <summary>
 /// Extension methods related to <see cref="DateTime"/>, <see cref="DateOnly"/>, <see cref="TimeSpan"/>, and <see cref="TimeOnly"/> values.
@@ -394,5 +396,49 @@ public static class DateAndTimeExtensions
 	public static string ToAmPm(this TimeOnly value)
 	{
 		return DateTime.Today.Add(value.ToTimeSpan()).ToString("t");
+	}
+
+	/// <inheritdoc cref="ISOWeek.GetWeekOfYear(DateTime)" />
+	public static int GetWeekOfYear(this DateOnly date)
+	{
+		return ISOWeek.GetWeekOfYear(date.ToDateTime());
+	}
+
+	/// <inheritdoc cref="ISOWeek.GetWeekOfYear(DateTime)" />
+	public static int GetWeekOfYear(this DateTime date)
+	{
+		return ISOWeek.GetWeekOfYear(date);
+	}
+
+	/// <inheritdoc cref="ISOWeek.GetWeekOfYear(DateTime)" />
+	/// <param name="startOfWeek">Calculates the week using the provided day as the first day of the week.</param>
+	public static int GetWeekOfYear(this DateOnly date, DayOfWeek startOfWeek)
+	{
+		return ISOWeek.GetWeekOfYear(date.ToDateTime().GetPreviousWeekday(startOfWeek));
+	}
+
+	/// <inheritdoc cref="ISOWeek.GetWeekOfYear(DateTime)" />
+	/// <param name="startOfWeek">Calculates the week using the provided day as the first day of the week.</param>
+	public static int GetWeekOfYear(this DateTime date, DayOfWeek startOfWeek)
+	{
+		return ISOWeek.GetWeekOfYear(date.GetPreviousWeekday(startOfWeek));
+	}
+
+	/// <inheritdoc cref="DateOnly.FromDateTime(DateTime)" />
+	public static DateOnly ToDateOnly(this DateTime date)
+	{
+		return DateOnly.FromDateTime(date);
+	}
+
+	/// <inheritdoc cref="TimeOnly.FromDateTime(DateTime)" />
+	public static TimeOnly ToTimeOnly(this DateTime date)
+	{
+		return TimeOnly.FromDateTime(date);
+	}
+
+	/// <inheritdoc cref="TimeOnly.FromTimeSpan(TimeSpan)" />
+	public static TimeOnly ToTimeOnly(this TimeSpan time)
+	{
+		return TimeOnly.FromTimeSpan(time);
 	}
 }
