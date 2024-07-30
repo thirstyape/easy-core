@@ -1,4 +1,5 @@
-﻿using System.Net;
+﻿using System.Buffers.Binary;
+using System.Net;
 
 namespace easy_core;
 
@@ -61,7 +62,12 @@ public static class IpAddressExtensions
 		if (cidr < 0 || cidr > 32)
 			throw new ArgumentException("The CIDR value must be in the range 0 to 32.", nameof(cidr));
 
-		return new IPAddress(address.ToLong() + (long)Math.Pow(2, 32 - cidr));
+		var last = address.ToLong() + (long)Math.Pow(2, 32 - cidr);
+
+		if (BitConverter.IsLittleEndian)
+			return new IPAddress(BinaryPrimitives.ReverseEndianness((uint)last));
+		else
+			return new IPAddress(last);
 	}
 
 	/// <summary>

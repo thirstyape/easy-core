@@ -14,7 +14,7 @@ public static class GeneralExtensions
 	/// <param name="value">The options to clone.</param>
 	/// <param name="includeConverters">Specifies whether to include converts in the resulting object.</param>
 	/// <remarks>
-	/// Does not clone properties that are only available in .NET 7.0 or .NET 8.0.
+	/// Does not clone properties that are only available in .NET 8.0.
 	/// </remarks>
 	public static JsonSerializerOptions Clone(this JsonSerializerOptions value, bool includeConverters = true)
 	{
@@ -89,11 +89,40 @@ public static class GeneralExtensions
 	/// <param name="source">The model containing the values to use.</param>
 	/// <param name="destination">The model to update.</param>
 	/// <param name="properties">The properties of the model to update.</param>
+	/// <remarks>
+	/// This method can be used to bypass restrictions on private setters or init only properties.
+	/// </remarks>
 	public static bool TryUpdateModel<TModel>(this TModel source, TModel destination, params Expression<Func<TModel, object?>>[] properties) where TModel : class
 	{
-		return source.TryUpdateModel(destination, true, properties);
-	}
+		var ok = true;
 
+		foreach (var expression in properties)
+		{
+			try
+			{
+				var name = expression.GetExpressionPropertyName();
+
+				if (string.IsNullOrWhiteSpace(name))
+				{
+					ok = false;
+					continue;
+				}
+
+				var property = typeof(TModel).GetProperty(name);
+
+				if (property != null)
+					property.SetValue(destination, property.GetValue(source, null));
+				else
+					ok = false;
+			}
+			catch
+			{
+				ok = false;
+			}
+		}
+
+		return ok;
+	}
 
 	/// <summary>
 	/// Updates the destination model instance using values from the source model.
@@ -103,6 +132,7 @@ public static class GeneralExtensions
 	/// <param name="destination">The model to update.</param>
 	/// <param name="updateNull">Specifies whether to update null values.</param>
 	/// <param name="properties">The properties of the model to update.</param>
+	[Obsolete("Use other overload.")]
 	public static bool TryUpdateModel<TModel>(this TModel source, TModel destination, bool updateNull, params Expression<Func<TModel, object?>>[] properties) where TModel : class
 	{
 		var ok = true;
@@ -119,10 +149,10 @@ public static class GeneralExtensions
 					continue;
 				}
 
-				var input = source.GetType().GetProperty(propertyName)?.GetValue(source, null);
+				var input = typeof(TModel).GetProperty(propertyName)?.GetValue(source, null);
 
 				if (input != null || updateNull)
-					destination.GetType().GetProperty(propertyName)!.SetValue(destination, input);
+					typeof(TModel).GetProperty(propertyName)!.SetValue(destination, input);
 			}
 			catch
 			{
