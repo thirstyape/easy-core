@@ -10,7 +10,7 @@ public static class MimeTypeMap
 {
 	private const string DefaultMimeType = "application/octet-stream";
 
-	private static readonly IDictionary<string, string> mappings = new Dictionary<string, string>(StringComparer.OrdinalIgnoreCase)
+	private static readonly Dictionary<string, string> mappings = new(StringComparer.OrdinalIgnoreCase)
 	{
 		{".323", "text/h323"},
 		{".3g2", "video/3gpp2"},
@@ -681,5 +681,14 @@ public static class MimeTypeMap
 	public static string GetMimeType(string fileName)
 	{
 		return TryGetMimeType(fileName, out var result) ? result! : DefaultMimeType;
+	}
+
+	/// <summary>
+	/// Returns the list of extensions that match the provided MIME type.
+	/// </summary>
+	/// <param name="mimeType">The type to match.</param>
+	public static IEnumerable<string> GetFileTypes(string mimeType)
+	{
+		return mappings.Where(x => x.Value == mimeType).Select(x => x.Key);
 	}
 }

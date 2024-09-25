@@ -222,4 +222,55 @@ public static class CollectionExtensions
 
 		return source;
 	}
+
+	/// <summary>
+	/// Returns the item after the provided value in the collection.
+	/// </summary>
+	/// <typeparam name="TValue"></typeparam>
+	/// <param name="source">The collection to search.</param>
+	/// <param name="current">An item in the collection.</param>
+	/// <param name="comparer">A function to determine whether two items are equal.</param>
+	public static TValue Next<TValue>(this IEnumerable<TValue> source, TValue current, Func<TValue, TValue, bool>? comparer = null)
+	{
+		TValue? next = default;
+		comparer ??= EqualityComparer<TValue>.Default.Equals;
+		bool matched = false;
+
+		foreach (var item in source)
+		{
+			if (matched)
+			{
+				next = item;
+				break;
+			}
+
+			if (comparer.Invoke(current, item))
+				matched = true;
+		}
+
+		return next ?? source.First();
+	}
+
+	/// <summary>
+	/// Returns the item before the provided value in the collection.
+	/// </summary>
+	/// <typeparam name="TValue"></typeparam>
+	/// <param name="source">The collection to search.</param>
+	/// <param name="current">An item in the collection.</param>
+	/// <param name="comparer">A function to determine whether two items are equal.</param>
+	public static TValue Previous<TValue>(this IEnumerable<TValue> source, TValue current, Func<TValue, TValue, bool>? comparer = null)
+	{
+		TValue? previous = default;
+		comparer ??= EqualityComparer<TValue>.Default.Equals;
+
+		foreach (var item in source)
+		{
+			if (comparer.Invoke(current, item))
+				break;
+
+			previous = item;
+		}
+
+		return previous ?? source.Last();
+	}
 }
