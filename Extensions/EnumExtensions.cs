@@ -18,7 +18,7 @@ public static class EnumExtensions
 	public static IEnumerable<TEnum> GetFlags<TEnum>(this TEnum value) where TEnum : Enum
 	{
 		foreach (var flag in Enum.GetValues(value.GetType()).Cast<TEnum>())
-			if ((Convert.ToInt64(value) & Convert.ToInt64(flag)) != 0)
+			if ((Convert.ToInt64(value) & Convert.ToInt64(flag)) == Convert.ToInt64(flag))
 				yield return flag;
 	}
 
