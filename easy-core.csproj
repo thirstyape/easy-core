@@ -8,9 +8,9 @@
 		<Authors>NF Software Inc.</Authors>
 		<Company>NF Software Inc.</Company>
 		<Copyright>Copyright 2024 $(Company)</Copyright>
-		<Version>1.1.3</Version>
-		<AssemblyVersion>1.1.3.0</AssemblyVersion>
-		<FileVersion>1.1.3.0</FileVersion>
+		<Version>1.1.4</Version>
+		<AssemblyVersion>1.1.4.0</AssemblyVersion>
+		<FileVersion>1.1.4.0</FileVersion>
 		<PackageId>Easy.Base</PackageId>
 		<PackageTags>library extensions converters tools</PackageTags>
 		<RepositoryUrl>https://github.com/thirstyape/easy-core</RepositoryUrl>
@@ -19,6 +19,9 @@
 			Contains basic functions and classes to simplify application development of modern applications.
 		</Description>
 		<PackageReleaseNotes>
+			1.1.4
+			Add method to check SSL certificate expiry date
+
 			1.1.3
 			Fix issue in EnumExtensions.GetFlags method affecting multi-bit flag values
 

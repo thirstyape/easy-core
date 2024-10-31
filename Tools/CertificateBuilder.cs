@@ -22,14 +22,32 @@ public static class CertificateBuilder
 	}
 
 	/// <summary>
-	/// Saves the provided certificate to a PFX file.
+	/// Checks whether the specified certificate is still valid or has expired.
+	/// </summary>
+	/// <param name="path">The full path to the certificate file.</param>
+	/// <param name="days">The number of days to adjust the expiry check by.</param>
+	public static bool CheckCertificateExpiry(string path, int days = 0)
+	{
+		if (File.Exists(path) == false)
+			return false;
+
+		var certificate = X509Certificate.CreateFromCertFile(path);
+
+		if (certificate == null)
+			return false;
+
+		var date = days == 0 ? DateTime.Now : DateTime.Now.AddDays(days);
+		return DateTime.TryParse(certificate.GetExpirationDateString(), out var expiry) && expiry > date;
+	}
+
+	/// <summary>
+	/// Saves the provided certificate to a PFX file (PKCS #12) with private key.
 	/// </summary>
 	/// <param name="path">The full path to save the certificate at.</param>
 	/// <param name="password">The password to protect the certificate with.</param>
 	/// <param name="certificate">The certificate to save.</param>
 	public static void SaveCertificateToPfx(string path, string password, X509Certificate2 certificate)
 	{
-		// Create PFX (PKCS #12) with private key
 		File.WriteAllBytes(path, certificate.Export(X509ContentType.Pfx, password));
 	}
 
