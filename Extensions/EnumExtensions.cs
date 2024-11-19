@@ -17,9 +17,15 @@ public static class EnumExtensions
 	/// </remarks>
 	public static IEnumerable<TEnum> GetFlags<TEnum>(this TEnum value) where TEnum : Enum
 	{
+		var lv = Convert.ToInt64(value);
+
 		foreach (var flag in Enum.GetValues(value.GetType()).Cast<TEnum>())
-			if ((Convert.ToInt64(value) & Convert.ToInt64(flag)) == Convert.ToInt64(flag))
+		{
+			var lf = Convert.ToInt64(flag);
+
+			if ((lv & lf) == lf)
 				yield return flag;
+		}
 	}
 
 	/// <summary>
@@ -27,12 +33,12 @@ public static class EnumExtensions
 	/// </summary>
 	/// <param name="value">The value to check.</param>
 	/// <param name="acceptableFlags">The flags to check against (input as TEnum.Option1 | TEnum.Option2).</param>
+	/// <remarks>
+	/// Does not support ulong as underlying type for Enum.
+	/// </remarks>
 	public static bool HasAnyFlag<TEnum>(this TEnum value, TEnum acceptableFlags) where TEnum : Enum
 	{
-		if (Enum.GetUnderlyingType(typeof(TEnum)) == typeof(ulong))
-			return (Convert.ToUInt64(value) & Convert.ToUInt64(acceptableFlags)) != 0;
-		else
-			return (Convert.ToInt64(value) & Convert.ToInt64(acceptableFlags)) != 0;
+		return (Convert.ToInt64(value) & Convert.ToInt64(acceptableFlags)) != 0;
 	}
 
 	/// <summary>
@@ -45,11 +51,7 @@ public static class EnumExtensions
 	/// </remarks>
 	public static bool HasAllFlags<TEnum>(this TEnum value, TEnum requiredFlags) where TEnum : Enum
 	{
-		foreach (var requirement in requiredFlags.GetFlags().Select(x => Convert.ToInt64(x)).Where(x => x > 0))
-			if ((Convert.ToInt64(value) & requirement) == 0)
-				return false;
-
-		return true;
+		return (Convert.ToInt64(value) & Convert.ToInt64(requiredFlags)) == Convert.ToInt64(requiredFlags);
 	}
 
 	/// <summary>
@@ -88,12 +90,13 @@ public static class EnumExtensions
 	/// <typeparam name="TEnum"></typeparam>
 	/// <param name="value">The value to add a flag to.</param>
 	/// <param name="flag">The option to add.</param>
+	/// <remarks>
+	/// Does not support ulong as underlying type for Enum.
+	/// </remarks>
 	public static TEnum SetFlag<TEnum>(this TEnum? value, TEnum flag) where TEnum : Enum
 	{
 		if (value == null)
 			return flag;
-		else if (Enum.GetUnderlyingType(typeof(TEnum)) == typeof(ulong))
-			return (TEnum)Enum.ToObject(typeof(TEnum), Convert.ToUInt64(value) | Convert.ToUInt64(flag));
 		else
 			return (TEnum)Enum.ToObject(typeof(TEnum), Convert.ToInt64(value) | Convert.ToInt64(flag));
 	}
@@ -104,12 +107,13 @@ public static class EnumExtensions
 	/// <typeparam name="TEnum"></typeparam>
 	/// <param name="value">The value to remove a flag from.</param>
 	/// <param name="flag">he option to remove.</param>
+	/// <remarks>
+	/// Does not support ulong as underlying type for Enum.
+	/// </remarks>
 	public static TEnum? UnsetFlag<TEnum>(this TEnum? value, TEnum flag) where TEnum : Enum
 	{
 		if (value == null)
 			return value;
-		else if (Enum.GetUnderlyingType(typeof(TEnum)) == typeof(ulong))
-			return (TEnum)Enum.ToObject(typeof(TEnum), Convert.ToUInt64(value) & ~Convert.ToUInt64(flag));
 		else
 			return (TEnum)Enum.ToObject(typeof(TEnum), Convert.ToInt64(value) & ~Convert.ToInt64(flag));
 	}
